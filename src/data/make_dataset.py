@@ -212,8 +212,8 @@ def handle_outliers_bpm(row, bpm_mapping):
 
 if __name__ == "__main__":
     # Define file paths
-    input_filepath = 'C:/Users/sirin/Desktop/Music_v_Mental_Health/data/raw/mxmh_survey_results.csv'
-    output_filepath = 'C:/Users/sirin/Desktop/Music_v_Mental_Health/data/processed/music_v_mental_health_cleaned.csv'
+    input_filepath = 'C:/Users/sirin/Desktop/Github projects/Music-and-Mental-Health/data/raw/mxmh_survey_results.csv'
+    output_filepath = 'C:/Users/sirin/Desktop/Github projects/Music-and-Mental-Health/data/processed/music_v_mental_health_cleaned.csv'
 
     # Load Data
     data = load_data(input_filepath)
