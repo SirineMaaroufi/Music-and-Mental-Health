@@ -1,5 +1,6 @@
 """
-This script performs data visualization on the cleaned Music and Mental Health dataset.
+The script is designed to perform data visualization on a cleaned dataset that explores 
+the relationship between music preferences, listening habits, and mental health.
 
 Author: Sirine Maaroufi
 Date: August 2024
@@ -9,6 +10,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import os
+from sklearn.preprocessing import LabelEncoder
+
 
 # --------------------------------------------------------------
 # Function Definitions
@@ -81,9 +84,9 @@ def plot_streaming_service(df, output_dir):
     save_plot(os.path.join(output_dir, "streaming_service_usage.png"))
 
 
-def plot_category_distribution(df, output_dir):
+def plot_musicianship_disctribution(df, output_dir):
     """
-    Generate and save a bar plot showing the proportion of responses across various categories.
+    Generate and save a bar plot showing the proportion of responses across two categories that reflect musicicanship.
 
     Parameters:
     df (pd.DataFrame): The dataset containing categorical response data.
@@ -91,7 +94,7 @@ def plot_category_distribution(df, output_dir):
     """
     # Melt the DataFrame to long format
     df_melted = df.melt(
-        value_vars=["instrumentalist", "composer", "exploratory", "foreign_languages"],
+        value_vars=["instrumentalist", "composer"],
         var_name="Category",
         value_name="Response",
     )
@@ -114,14 +117,53 @@ def plot_category_distribution(df, output_dir):
         palette="pastel",
     )
     plt.title(
-        "Proportion of Responses Across Various Categories with Percentage Breakdown"
+        "Percentage of Musicians by Role: Composer and Instrumentalist"
     )
     plt.xlabel("Category")
     plt.ylabel("Percentage")
     plt.legend(title="Response")
-    save_plot(os.path.join(output_dir, "category_distribution.png"))
+    save_plot(os.path.join(output_dir, "musicianship_distribution.png"))
 
+def plot_music_engagement_disctribution(df, output_dir):
+    """
+    Generates and saves a bar plot showing the proportion of responses regarding music engagement.
 
+    Parameters:
+    df (pd.DataFrame): The dataset containing categorical response data.
+    output_dir (str): The directory where the plot will be saved.
+    """
+    # Melt the DataFrame to long format
+    df_melted = df.melt(
+        value_vars=["exploratory", "foreign_languages"],
+        var_name="Category",
+        value_name="Response",
+    )
+    # Calculate counts and percentages
+    category_counts = (
+        df_melted.groupby(["Category", "Response"]).size().reset_index(name="Count")
+    )
+    category_totals = df_melted.groupby("Category").size().reset_index(name="Total")
+    category_counts = category_counts.merge(category_totals, on="Category")
+    category_counts["Percentage"] = (
+        category_counts["Count"] / category_counts["Total"]
+    ) * 100
+    # Plot the bar chart with categories and responses
+    plt.figure(figsize=(12, 7))
+    sns.barplot(
+        data=category_counts,
+        x="Category",
+        y="Percentage",
+        hue="Response",
+        palette="pastel",
+    )
+    plt.title(
+        "Percentage of Music Engagement by Exploration and Foreign Language Listening"
+    )
+    plt.xlabel("Category")
+    plt.ylabel("Percentage")
+    plt.legend(title="Response")
+    save_plot(os.path.join(output_dir, "music_engagement_distribution.png"))
+    
 def plot_favorite_genre(df, output_dir):
     """
     Generate and save a bar plot of favorite music genres with percentages.
@@ -175,7 +217,6 @@ def plot_while_working(df, output_dir):
     plt.title("Listening to Music While Working with Percentages")
     plt.xlabel("Listen While Working (Yes/No)")
     plt.ylabel("Percentage")
-    plt.xticks(rotation=45)
     save_plot(os.path.join(output_dir, "while_working.png"))
 
 
@@ -267,60 +308,43 @@ def plot_age_group_genre(df, output_dir):
     save_plot(os.path.join(output_dir, "age_group_genre.png"))
 
 
-def plot_genre_frequency(df, output_dir):
-    """
-    Generate and save a count plot showing the frequency of listening to each genre, ordered by frequency categories.
-
-    Parameters:
-    df (pd.DataFrame): The dataset containing genre frequency data.
-    output_dir (str): The directory where the plot will be saved.
-    """
-    # Melt the DataFrame to long format for easier plotting
-
-    df_melt = df.melt(
-        id_vars=["favorite_genre"],
-        value_vars=[col for col in df.columns if "freq" in col],
-        var_name="Genre",
-        value_name="Frequency",
+def plot_genre_frequency_counts(df, output_dir):
+    # Filter columns that contain 'freq'
+    freq_columns = [col for col in df.columns if "freq" in col]
+    
+     # Melt the DataFrame to long format for easier plotting
+    df_long = df.melt(value_vars=freq_columns, var_name='Genre', value_name='Frequency')
+    
+    # Aggregate counts for each frequency category
+    genre_freq_counts = df_long.groupby(['Genre', 'Frequency']).size().reset_index(name='Count')
+    
+    # Define the order for frequency categories
+    frequency_order = ['Very frequently', 'Sometimes', 'Rarely', 'Never']
+    
+    # Ensure the frequency category is ordered
+    genre_freq_counts['Frequency'] = pd.Categorical(genre_freq_counts['Frequency'], categories=frequency_order, ordered=True)
+    
+    # Clean up the Genre column by removing 'freq_' prefix
+    genre_freq_counts['Genre'] = genre_freq_counts['Genre'].str.replace('freq_', '', regex=False)
+    
+    # Plot
+    plt.figure(figsize=(14, 10))
+    sns.barplot(
+        data=genre_freq_counts,
+        x='Genre',
+        y='Count',
+        hue='Frequency',
+        palette='coolwarm',
+        hue_order=frequency_order
     )
-
-    # Define the order of frequency categories
-
-    frequency_order = ["Very frequently", "Sometimes", "Rarely", "Never"]
-    df_melt["Frequency"] = pd.Categorical(
-        df_melt["Frequency"], categories=frequency_order, ordered=True
-    )
-    # Calculate the total count of each genre
-
-    genre_total_counts = (
-        df_melt.groupby("favorite_genre")["Frequency"]
-        .count()
-        .reset_index(name="TotalCount")
-    )
-    # Order genres by their total counts
-
-    ordered_genres = genre_total_counts.sort_values(by="TotalCount", ascending=False)[
-        "favorite_genre"
-    ].tolist()
-    df_melt["favorite_genre"] = pd.Categorical(
-        df_melt["favorite_genre"], categories=ordered_genres, ordered=True
-    )
-    # Create and save the count plot
-
-    plt.figure(figsize=(14, 8))
-    sns.countplot(
-        data=df_melt,
-        y="favorite_genre",
-        hue="Frequency",
-        palette="tab20",
-        order=ordered_genres,
-    )
-    plt.title("Frequency of Listening to Each Genre Ordered by Frequency Categories")
-    plt.xlabel("Count")
-    plt.ylabel("Genre")
-    plt.legend(title="Frequency", bbox_to_anchor=(1.05, 1), loc="upper left")
-    save_plot(os.path.join(output_dir, "genre_frequency.png"))
-
+    plt.title('Listening Frequency Counts for Each Genre')
+    plt.xlabel('Music Genre')
+    plt.ylabel('Count')
+    plt.legend(title='Frequency', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.tight_layout()
+    
+    # Save the plot
+    plt.savefig(os.path.join(output_dir, "genre_frequency.png"))
 
 def plot_mental_illnesses(df, output_dir):
     """
@@ -528,6 +552,157 @@ def plot_mental_health_and_music_effects(df, output_dir):
     plt.legend(title="Mental Health Issue", bbox_to_anchor=(1.05, 1), loc="upper left")
     save_plot(os.path.join(output_dir, "mental_illness_music_effects_combined.png"))
 
+def create_mental_health_columns(df):
+    """
+    Creates new boolean columns for each mental health issue based on specific thresholds.
+    
+    Parameters:
+    - df: DataFrame containing the dataset with columns 'ocd', 'insomnia', 'depression', 'anxiety'.
+    
+    Returns:
+    - DataFrame with new boolean columns.
+    """
+    # Define thresholds
+    ocd_threshold = 5
+    insomnia_threshold = 5
+    depression_threshold = 5
+    anxiety_threshold = 5
+
+    # Create boolean columns based on thresholds
+    df['has_ocd'] = df['ocd'] > ocd_threshold
+    df['has_insomnia'] = df['insomnia'] > insomnia_threshold
+    df['has_depression'] = df['depression'] > depression_threshold
+    df['has_anxiety'] = df['anxiety'] > anxiety_threshold
+
+    return df
+
+def visualize_music_preferences_for_mental_illness(df, mental_health_columns, output_dir,
+                                                   music_pref_col):
+    """
+    Visualizes the preferred genre of music for each mental illness based on boolean columns,
+    ordered from most preferred to least preferred.
+    
+    Parameters:
+    - df: DataFrame containing the dataset with new boolean columns.
+    - mental_health_columns: List of boolean columns representing different mental health issues.
+    - music_pref_col: The column name representing the music preference (default is 'favorite_genre').
+    - palette: The color palette to use for the plot.
+    """
+    # Melt the DataFrame to long format for seaborn
+    df_melted = df.melt(id_vars=[music_pref_col], value_vars=mental_health_columns,
+                        var_name='Mental Health Issue', value_name='Has Issue')
+    
+    # Filter out rows where 'Has Issue' is False
+    df_melted = df_melted[df_melted['Has Issue']]
+    
+    # Calculate the counts of each genre for each mental health issue
+    genre_counts = df_melted.groupby(['Mental Health Issue', music_pref_col]).size().reset_index(name='Count')
+    
+    # For each mental health issue, sort genres by count in descending order
+    sorted_genre_counts = genre_counts.sort_values(by=['Mental Health Issue', 'Count'], ascending=[True, False])
+    
+    # Create the plot
+    plt.figure(figsize=(12, 8))
+    
+    # Plot the count of favorite genres for each mental health issue
+    sns.barplot(data=sorted_genre_counts, y=music_pref_col, x='Count', hue='Mental Health Issue', palette='pastel')
+    
+    plt.title('Preferred Music Genre for Each Mental Illness (Ordered by Preference)')
+    plt.xlabel('Count')
+    plt.ylabel('Favorite Genre')
+    plt.legend(title='Mental Health Issue', bbox_to_anchor=(1.05, 1), loc='upper left')
+    save_plot(os.path.join(output_dir, "music_prefrences_mental_illness.png"))
+
+    
+def visualize_percentage_of_mental_illness(df, mental_health_columns, output_dir):
+    """
+    Visualizes the percentage of individuals with each mental illness based on boolean columns.
+    
+    Parameters:
+    - df: DataFrame containing the dataset with new boolean columns.
+    - mental_health_columns: List of boolean columns representing different mental health issues.
+    - palette: The color palette to use for the plot.
+    """
+    # Calculate the percentage of individuals with each mental illness
+    total_count = len(df)
+    illness_percentages = {col: (df[col].sum() / total_count) * 100 for col in mental_health_columns}
+    
+    # Convert to DataFrame for plotting
+    percentage_df = pd.DataFrame(list(illness_percentages.items()), columns=['Mental Health Issue', 'Percentage'])
+    
+    # Plot the data
+    plt.figure(figsize=(10, 6))
+    sns.barplot(data=percentage_df, x='Mental Health Issue', y='Percentage', palette='pastel')
+    
+    plt.title('Percentage of Individuals with Each Mental Illness')
+    plt.xlabel('Mental Health Issue')
+    plt.ylabel('Percentage (%)')
+    plt.ylim(0, 100)  # Ensure the y-axis goes from 0 to 100%
+    save_plot(os.path.join(output_dir, "percentage_mental_illness.png"))
+    
+def visualize_hours_vs_music_effects(df,output_dir):
+    """
+    Visualizes the relationship between hours per day listening to music and music effects.
+    
+    Parameters:
+    - df: DataFrame containing 'hours_per_day' and 'music_effects' columns.
+    """
+    plt.figure(figsize=(10, 6))
+    sns.scatterplot(data=df, x='hours_per_day', y='music_effects', hue='music_effects', palette=colors_custom, s=100, alpha=0.7)
+    plt.title('Relationship Between Hours Per Day Listening to Music and Music Effects')
+    plt.xlabel('Hours Per Day')
+    plt.ylabel('Music Effects')
+    plt.legend(title='Music Effects', bbox_to_anchor=(1.05, 1), loc='upper left')
+    save_plot(os.path.join(output_dir, "hr_per_day_music_effects.png"))
+
+
+def label_encode(df):
+    """
+    Perform label encoding on specified categorical columns of the DataFrame.
+
+    Parameters:
+    df (pd.DataFrame): The dataset containing categorical variables.
+    categorical_columns (list): List of column names to be label encoded.
+
+    Returns:
+    pd.DataFrame: DataFrame with label encoded columns.
+    """
+    categorical_columns = df.select_dtypes(include=['object', 'category']).columns.tolist()
+
+    le = LabelEncoder()
+    for column in categorical_columns:
+        df[column] = le.fit_transform(df[column])
+    return df
+
+def plot_correlation_matrix(df, output_dir):
+    """
+    Generate and save a heatmap of the correlation matrix for the given DataFrame.
+
+    Parameters:
+    df (pd.DataFrame): The dataset containing numerical variables.
+    output_dir (str): The directory where the plot will be saved.
+    """
+    label_encode(df)
+    # Compute the correlation matrix
+    corr_matrix = df.corr()
+    
+    # Plot the heatmap
+    plt.figure(figsize=(16, 14))
+    sns.heatmap(
+        corr_matrix,
+        annot=True,
+        cmap='coolwarm',
+        center=0,
+        linewidths=0.5,
+        fmt='.2f',
+        cbar_kws={'shrink': 0.75}
+    )
+    plt.title('Correlation Matrix')
+    plt.tight_layout()
+    
+    # Save the plot
+    plt.savefig(os.path.join(output_dir, "correlation_matrix.png"))
+
 
 # --------------------------------------------------------------
 # Main Script Execution
@@ -551,13 +726,14 @@ def main():
     # Generate and save plots
     plot_age_distribution(df, output_dir)
     plot_streaming_service(df, output_dir)
-    plot_category_distribution(df, output_dir)
+    plot_musicianship_disctribution(df, output_dir)     
+    plot_music_engagement_disctribution(df, output_dir)
     plot_favorite_genre(df, output_dir)
     plot_while_working(df, output_dir)
     plot_hours_per_day(df, output_dir)
     plot_bpm_distribution(df, output_dir)
     plot_age_group_genre(df, output_dir)
-    plot_genre_frequency(df, output_dir)
+    plot_genre_frequency_counts(df, output_dir)
     plot_mental_illnesses(df, output_dir)
     plot_music_effects_pie_chart(df, output_dir)
     plot_favorite_genre_and_music_effects(df, output_dir)
@@ -565,7 +741,14 @@ def main():
     plot_hours_per_day_and_music_effects(df, output_dir)
     plot_instrumentalist_composer_and_music_effects(df, output_dir)
     plot_mental_health_and_music_effects(df, output_dir)
-
+    create_mental_health_columns(df)
+    mental_health_columns = ['has_anxiety', 'has_depression', 'has_insomnia', 'has_ocd']
+    visualize_music_preferences_for_mental_illness(df, mental_health_columns, output_dir, 
+                                                   music_pref_col='favorite_genre')
+    visualize_percentage_of_mental_illness(df, mental_health_columns, output_dir)
+    
+    visualize_hours_vs_music_effects(df,output_dir)
+    plot_correlation_matrix(df, output_dir)
     print("Plots have been successfully saved.")
 
 
