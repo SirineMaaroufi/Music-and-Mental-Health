@@ -176,7 +176,7 @@ All categories exhibit some *outliers* indicating that individual responses to m
 The overlap in BPM ranges across different outcomes suggests that while moderate tempos are generally preferred, the impact of music on mental health varies and *is not solely dependent on BPM*.
 <div style="width: 70%; margin: auto;">
 
-![Listening Hours and Music Effect](/reports/Figures/BPM_music_effects.png)\
+![Prefered BPM and Music Effect](/reports/Figures/BPM_music_effects.png)\
 </div>
 
 ---
