@@ -711,7 +711,7 @@ def plot_correlation_matrix(df, output_dir):
 
 def main():
     # Define file paths
-    data_filepath = "C:/Users/sirin/Desktop/Github projects/Music-and-Mental-Health/data/processed/music_v_mental_health_cleaned.csv"
+    data_filepath = "C:/Users/sirin/Desktop/Github projects/Music-and-Mental-Health/data/interim/music_v_mental_health_cleaned.csv"
     output_dir = (
         "C:/Users/sirin/Desktop/Github projects/Music-and-Mental-Health/reports/Figures"
     )

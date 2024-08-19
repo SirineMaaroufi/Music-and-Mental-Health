@@ -45,7 +45,8 @@ The primary objectives of this analysis are to:
 
 ## 2. Data Overview
 
-The dataset includes information on demographic variables, music preferences, musical background and Engagement with Music, listening habits, and self-reported mental health conditions. 
+The dataset includes information on demographic variables, music preferences, musical background and Engagement with Music, listening habits, and self-reported mental health conditions. \
+The dataset contains 728 rows and 31 columns. Seven columns are numerical and the rest are categorical.
 
 ## 3. Exploratory Data Analysis
 
@@ -176,7 +177,7 @@ All categories exhibit some *outliers* indicating that individual responses to m
 The overlap in BPM ranges across different outcomes suggests that while moderate tempos are generally preferred, the impact of music on mental health varies and *is not solely dependent on BPM*.
 <div style="width: 70%; margin: auto;">
 
-![Prefered BPM and Music Effect](/reports/Figures/bpm_music_effects.png)\
+![Prefered BPM and Music Effect](/reports/Figures/BPM_music_effects.png)\
 </div>
 
 ---
