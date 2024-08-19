@@ -166,7 +166,7 @@ This visualization reveals genre preferences among respondents with different me
 </div>
 
 ---
-### 4.2. Prefered BPM and Music Effect
+### 4.2. Preferred BPM and Music Effect
 ---
 The boxplot analysis of the relationship between Beats Per Minute (BPM) and music's effect shows:
 - **Improvement:** BPM ranges between 100 and 140.
@@ -177,7 +177,7 @@ All categories exhibit some *outliers* indicating that individual responses to m
 The overlap in BPM ranges across different outcomes suggests that while moderate tempos are generally preferred, the impact of music on mental health varies and *is not solely dependent on BPM*.
 <div style="width: 70%; margin: auto;">
 
-![Prefered BPM and Music Effect](/reports/Figures/BPM_music_effects.png)\
+![Preferred BPM and Music Effect](/reports/Figures/BPM_music_effects.png)\
 </div>
 
 ---

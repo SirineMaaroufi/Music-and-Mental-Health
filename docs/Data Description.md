@@ -6,7 +6,7 @@ tags: []
 
 # **Data Description**
 
-The MxMH dataset explores the relationship between music preferences and self-reported mental health, potentially informing music therapy (MT) practices. MT is recognized for enhancing mood and mental well-being by stimulating "happy" hormones like oxytocin.
+The [MxMH dataset](https://www.kaggle.com/datasets/catherinerasgaitis/mxmh-survey-results) explores the relationship between music preferences and self-reported mental health, potentially informing music therapy (MT) practices. MT is recognized for enhancing mood and mental well-being by stimulating "happy" hormones like oxytocin.
 
 
 ## **Data Collection**
