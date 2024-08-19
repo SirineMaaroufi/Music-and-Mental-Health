@@ -54,7 +54,7 @@ The dataset contains 728 rows and 31 columns. Seven columns are numerical and th
 ---
 - **Age Distribution**\
 The dataset reveals a predominance of younger respondents, particularly between **14 and 27 years old**. This age group is likely to have distinct music preferences and listening habits compared to older populations. For instance, younger individuals may gravitate towards genres like Rock and Pop due to their popularity and cultural trends within this demographic. Additionally, younger people are more likely to use modern streaming services, which could affect the frequency and context of their music consumption.
-<div style="width: 30%; margin: auto;">
+<div style="width: 50%; margin: auto;">
 
 ![Age Distribution](/reports/Figures/age_distribution.png)
 </div>
