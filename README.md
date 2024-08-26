@@ -34,7 +34,7 @@ Feature engineering enhances model performance. The [`build_feature.py`](src/fea
 
 ## 🤖 Model Training and Prediction
 
-- **Model Training**: Various machine learning models were evaluated, with the StackingClassifier, which combines RandomForest, SVC, KNeighborsClassifier, and Logistic Regression, achieving a **0.90 Test Accuracy**. Training and evaluation are handled by the [`train_model.py`](../Music-and-Mental-Health/src/models/train_model.py) script, and the trained model is saved in the [`models`](../Music-and-Mental-Health/models/) directory. See the [`Modeling Report`](../Music-and-Mental-Health/reports/Modeling%20Report.md) for details.
+- **Model Training**: Various machine learning models were evaluated, with the `StackingClassifier`, which combines `RandomForest, SVC, KNeighborsClassifier,` and `Logistic Regression`, achieving the best results. Training and evaluation are handled by the [`train_model.py`](../Music-and-Mental-Health/src/models/train_model.py) script, and the trained model is saved in the [`models`](../Music-and-Mental-Health/models/) directory. See the [`Modeling Report`](../Music-and-Mental-Health/reports/Modeling%20Report.md) for details.
 
 - **Model Prediction**: The [`predict_model.py`](src/models/predict_model.py) script makes predictions based on the trained model.
 
@@ -74,9 +74,9 @@ ___
 
 ### 🤖📊 **Modeling Results**
 ___
-* **Summary**: The StackingClassifier achieved a high test accuracy, indicating strong model performance. Precision, recall, and F1-scores were well-balanced.
+* **Summary**: The `StackingClassifier` achieved a high test accuracy, indicating strong model performance. **Precision, recall, and F1-scores** were well-balanced.
 * **Key Takeaways:**
-  - **StackingClassifier Performance:** 🏆 The StackingClassifier, combining RandomForest, SVC, KNeighborsClassifier, and Logistic Regression, achieved a **0.9049 Test Accuracy**.
+  - **StackingClassifier Performance:** 🏆 The `StackingClassifier`, combining `RandomForest, SVC, KNeighborsClassifier,` and `Logistic Regression`, achieved a **0.9049 Test Accuracy**.
   - **Precision and Recall:** 🎯 The model demonstrated excellent precision and recall, particularly for the worsening class (-1) with perfect scores.
   - **Balanced F1-Scores:** 📈 F1-scores were balanced across all classes, indicating robust model performance.
 
