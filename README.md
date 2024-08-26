@@ -33,11 +33,9 @@ The [`EDA and Data Analysis Report`](reports/EDA%20&%20Data%20Analysis%20Report.
 Feature engineering boosts model performance by transforming raw data into meaningful features. Key steps include encoding, scaling, creating new features, and addressing class imbalance, detailed in the [`Feature Engineering Documentation`](docs/Feature%20Engineering%20Documentation.md). The preprocessing script, [`build_feature.py`](src/features/build_features.py) handles these transformations.
 Preprocessed data is stored in the [`data/processed`](data/processed/) directory.
 
-## 🤖 Model Training and Prediction
+## 🤖 Model Training and Evaluation
 
 - **Model Training**: Various machine learning models were evaluated, with the `StackingClassifier`, which combines `RandomForest, SVC, KNeighborsClassifier,` and `Logistic Regression`, achieving the best results. Training and evaluation are handled by the [`train_model.py`](../Music-and-Mental-Health/src/models/train_model.py) script, and the trained model is saved in the [`models`](../Music-and-Mental-Health/models/) directory. See the [`Modeling Report`](../Music-and-Mental-Health/reports/Modeling%20Report.md) for details.
-
-- **Model Prediction**: The [`predict_model.py`](src/models/predict_model.py) script makes predictions based on the trained model.
 
 ## 📚 Documentation
 
