@@ -12,14 +12,14 @@
 
 ## Project Overview
 
-<div style="display: flex; align-items: flex-start;">
+<div style="display: flex; align-items: flex-start; justify-content: space-between;">
 
-  <div style="flex: 1;">
+  <div style="flex: 1; max-width: 70%;">
     <p>This project investigates the relationship between music listening habits and mental health, motivated by a personal passion for music and its positive impact on well-being. As an avid listener of various music genres, I have experienced firsthand how different types of music can influence mood and emotional states. This project aims to explore these effects more systematically, focusing particularly on individuals with mental health conditions.</p>
     <p>By analyzing a comprehensive dataset that includes listener habits, demographics, and self-reported mental health experiences, we seek to uncover the impact of different music genres on mental well-being. The ultimate goal is to develop a predictive model that can assess the potential effects of music on mental health, providing insights for both individuals and healthcare professionals.</p>
   </div>
 
-  <div style="flex: 0 0 auto; margin-left: 20px;">
+  <div style="flex: 0 0 auto; max-width: 25%;">
     <img src="reports/Figures/overview_pic.png" alt="Music Effects on Mental Health" style="width: 150px; height: auto;"/>
   </div>
 
