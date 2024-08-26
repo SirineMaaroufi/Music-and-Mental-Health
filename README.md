@@ -11,7 +11,7 @@ The ultimate goal is to develop a predictive model that can assess the potential
 ## Key Components
 
 ## 🗃️ Data Organization
-Data is organized in the [`data`](../Music-and-Mental-Health/data/) folder:
+Data is organized in the [`data`](/Music-and-Mental-Health/data/) folder:
 - **Raw Data**: Original, unprocessed data.
 - **Interim Data**: Transformed data used as an intermediate step.
 - **Processed Data**: Final datasets prepared for analysis and modeling.
