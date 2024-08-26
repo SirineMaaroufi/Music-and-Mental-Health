@@ -2,11 +2,18 @@
 
 ## Project Overview
 
-This project investigates the relationship between music listening habits and mental health, motivated by a personal passion for music and its positive impact on well-being. As an avid listener of various music genres, I have experienced firsthand how different types of music can influence mood and emotional states. This project aims to explore these effects more systematically, focusing particularly on individuals with mental health conditions.
+<div style="display: flex; align-items: center;">
 
-By analyzing a comprehensive dataset that includes listener habits, demographics, and self-reported mental health experiences, we seek to uncover the impact of different music genres on mental well-being. \
-The ultimate goal is to develop a predictive model that can assess the potential effects of music on mental health.
+  <div style="flex: 1; padding-right: 20px;">
+    <p>This project investigates the relationship between music listening habits and mental health, motivated by a personal passion for music and its positive impact on well-being. As an avid listener of various music genres, I have experienced firsthand how different types of music can influence mood and emotional states. This project aims to explore these effects more systematically, focusing particularly on individuals with mental health conditions.</p>
+    <p>By analyzing a comprehensive dataset that includes listener habits, demographics, and self-reported mental health experiences, we seek to uncover the impact of different music genres on mental well-being. The ultimate goal is to develop a predictive model that can assess the potential effects of music on mental health, providing insights for both individuals and healthcare professionals.</p>
+  </div>
 
+  <div>
+    <img src="reports/Figures/overview_pic.png" alt="Music Effects on Mental Health" style="width: 200px; height: auto;"/>
+  </div>
+
+</div>
 
 ## Key Components
 
@@ -33,7 +40,7 @@ Feature engineering enhances model performance. The [`build_feature.py`](../Musi
 
 ## 🤖 Model Training and Prediction
 
-- **Model Training**: Various machine learning models were evaluated, with the StackingClassifier, which combines RandomForest, SVC, KNeighborsClassifier, and Logistic Regression, achieving a **0.90 Test Accuracy**. Training and evaluation are handled by the [`train_model.py`](../Music-and-Mental-Health/src/models/train_model.py) script, and the trained model is saved in the [`models`](../Music-and-Mental-Health/models/) directory. See the [`Modeling Report`](../Music-and-Mental-Health/reports/Modeling%20Report.md) for details.
+- **Model Training**: Various machine learning models were evaluated, with the StackingClassifier, which combines RandomForest, SVC, KNeighborsClassifier, and Logistic Regression, achieving the best results. Training and evaluation are handled by the [`train_model.py`](../Music-and-Mental-Health/src/models/train_model.py) script, and the trained model is saved in the [`models`](../Music-and-Mental-Health/models/) directory. See the [`Modeling Report`](../Music-and-Mental-Health/reports/Modeling%20Report.md) for details.
 
 - **Model Prediction**: The [`predict_model.py`](../Music-and-Mental-Health/src/models/predict_model.py) script makes predictions based on the trained model.
 
@@ -75,7 +82,7 @@ ___
 ___
 * **Summary**: The StackingClassifier achieved a high test accuracy, indicating strong model performance. Precision, recall, and F1-scores were well-balanced.
 * **Key Takeaways:**
-  - **StackingClassifier Performance:** 🏆 The StackingClassifier, combining RandomForest, SVC, KNeighborsClassifier, and Logistic Regression, achieved a **0.90 Test Accuracy**.
+  - **StackingClassifier Performance:** 🏆 The StackingClassifier, combining RandomForest, SVC, KNeighborsClassifier, and Logistic Regression, achieved a **0.9049 Test Accuracy**.
   - **Precision and Recall:** 🎯 The model demonstrated excellent precision and recall, particularly for the worsening class (-1) with perfect scores.
   - **Balanced F1-Scores:** 📈 F1-scores were balanced across all classes, indicating robust model performance.
 
