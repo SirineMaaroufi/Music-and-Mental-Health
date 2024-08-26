@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.ensemble import (
     RandomForestClassifier,
     StackingClassifier,
@@ -11,37 +11,200 @@ from sklearn.ensemble import (
     AdaBoostClassifier,
     VotingClassifier,
 )
+from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import make_pipeline
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import (
-    accuracy_score,
-    confusion_matrix,
-    classification_report,
-    precision_recall_curve,
-    roc_curve,
-    roc_auc_score,
-)
-from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.pipeline import Pipeline
 import joblib
 import os
 from sklearn.base import clone
 
 
-data_filepath = "C:/Users/sirin/Desktop/Github projects/Music-and-Mental-Health/data/processed/music_v_mental_health_processed.csv"
-model_filepath = "C:/Users/sirin/Desktop/Github projects/Music-and-Mental-Health/models/music_effects_model.pkl"
-X_test_filepath = "C:/Users/sirin/Desktop/Github projects/Music-and-Mental-Health/data/processed/X_test.csv"
-y_test_filepath = "C:/Users/sirin/Desktop/Github projects/Music-and-Mental-Health/data/processed/y_test.csv"
-output_dir = (
-    "C:/Users/sirin/Desktop/Github projects/Music-and-Mental-Health/reports/Figures"
-)
+# ---------------------------------------------------------------------
+# -------------------- Functions Definitions --------------------------
+# ---------------------------------------------------------------------
+# Define pipeline with feature selection and scaling
+def create_pipeline(model):
+    """
+    Sets up a pipeline with feature selection and a model.
+
+    Parameters:
+    - model: A classifier object to be used in the pipeline.
+
+    Returns:
+    - Pipeline: A scikit-learn pipeline with feature selection and the provided model.
+    """
+    return Pipeline(
+        [
+            (
+                "select_k_best",
+                SelectKBest(score_func=f_classif, k=32),
+            ),  # Combine multiple feature selection methods
+            ("model", model),
+        ]
+    )
+
+
+# Function to evaluate a model using cross-validation
+def evaluate_model_cv(model, X_train, y_train, skf):
+    """
+    Performs cross-validation and computes the average accuracy.
+
+    Parameters:
+    - model: A machine learning classifier to be evaluated.
+    - X_train: Training features.
+    - y_train: Training target values.
+    - skf: StratifiedKFold object for cross-validation.
+
+    Returns:
+    - float: The average accuracy across the cross-validation folds.
+    """
+    cv_accuracies = []
+    for train_idx, test_idx in skf.split(X_train, y_train):
+        X_cv_train, X_cv_test = X_train.iloc[train_idx], X_train.iloc[test_idx]
+        y_cv_train, y_cv_test = y_train.iloc[train_idx], y_train.iloc[test_idx]
+
+        # Clone the model to ensure independence of folds
+        clf = clone(model)
+
+        # Train the model
+        clf.fit(X_cv_train, y_cv_train)
+
+        # Evaluate on the CV test set
+        y_cv_pred = clf.predict(X_cv_test)
+        cv_accuracy = accuracy_score(y_cv_test, y_cv_pred)
+        cv_accuracies.append(cv_accuracy)
+
+    # Return average cross-validation accuracy
+    return sum(cv_accuracies) / len(cv_accuracies)
+
+
+# Function to evaluate a model on validation set
+def evaluate_model(model, X_train, y_train, X_val, y_val):
+    """
+    Trains and evaluates a model on the validation set.
+
+    Parameters:
+    - model: A machine learning classifier to be evaluated.
+    - X_train: Training features.
+    - y_train: Training target values.
+    - X_val: Validation features.
+    - y_val: Validation target values.
+
+    Returns:
+    - tuple: A tuple containing validation accuracy, classification report, and predicted labels on the validation set.
+    """
+    model.fit(X_train, y_train)
+    y_val_pred = model.predict(X_val)
+    val_accuracy = accuracy_score(y_val, y_val_pred)
+    class_report = classification_report(y_val, y_val_pred)
+
+    return val_accuracy, class_report, y_val_pred
+
+
+# Function to save and print model evaluation results
+def save_and_print_evaluation_results(
+    models, X_train, y_train, X_val, y_val, skf, output_file
+):
+    """
+    Evaluates multiple models using cross-validation and validation set, and saves the results to a file.
+
+    Parameters:
+    - models: List of tuples containing models and their names.
+    - X_train: Training features.
+    - y_train: Training target values.
+    - X_val: Validation features.
+    - y_val: Validation target values.
+    - skf: StratifiedKFold object for cross-validation.
+    - output_file: Path to the file where the results will be saved.
+    """
+    with open(output_file, "w") as f:
+        for model, name in models:
+            f.write(f"Evaluating {name}...\n")
+            print(f"Evaluating {name}...")
+
+            # Cross-validation
+            avg_cv_accuracy = evaluate_model_cv(model, X_train, y_train, skf)
+            f.write(
+                f"{name} average cross-validation accuracy: {avg_cv_accuracy:.4f}\n"
+            )
+            print(f"{name} average cross-validation accuracy: {avg_cv_accuracy:.4f}")
+
+            # Validation
+            (
+                val_accuracy,
+                class_report,
+                y_val_pred
+            ) = evaluate_model(model, X_train, y_train, X_val, y_val)
+            f.write(f"{name} validation accuracy: {val_accuracy:.4f}\n")
+            f.write(f"{name} classification report:\n{class_report}\n")
+            f.write("-" * 50 + "\n")
+            print(f"{name} validation accuracy: {val_accuracy:.4f}")
+            print(f"{name} classification report:\n{class_report}")
+            print("-" * 50)
+
+
+def print_not_selected_features(stacking_model, X_train_val):
+    """
+    Prints the features that are not selected by the feature selector in each estimator of the stacking model.
+
+    Parameters:
+    - stacking_model: A StackingClassifier object with feature selectors.
+    - X_train_val: Features from the combined training and validation set.
+    """
+    for name, estimator in stacking_model.named_estimators_.items():
+        if hasattr(estimator.named_steps["select_k_best"], "get_support"):
+            selected_mask = estimator.named_steps["select_k_best"].get_support()
+            not_selected_features = X_train_val.columns[~selected_mask]
+            print(f"Features not selected by {name}:")
+            print(not_selected_features)  # freq_metal and ocd
+
+
+def plot_normalized_confusion_matrix(y_true, y_pred, output_dir):
+    """
+    Plot and save a normalized confusion matrix.
+
+    Parameters:
+    - y_true: True labels of the test set.
+    - y_pred: Predicted labels from the model.
+    - output_dir: Directory where the plots will be saved.
+    """
+
+    # Create the output directory if it doesn't exist
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Plot Normalized Confusion Matrix
+    cm = confusion_matrix(y_true, y_pred)
+    cm_normalized = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
+
+    plt.figure(figsize=(10, 7))
+    sns.heatmap(
+        cm_normalized,
+        annot=True,
+        fmt=".2f",
+        cmap="Blues",
+        xticklabels=np.unique(y_true),
+        yticklabels=np.unique(y_true),
+    )
+    plt.title("Normalized Confusion Matrix")
+    plt.xlabel("Predicted Label")
+    plt.ylabel("True Label")
+    plt.savefig(f"{output_dir}/normalized_confusion_matrix.png")
+    plt.close()
+
+
+# ---------------------------------------------------------------------
+# -------------------- Main Code Execution ----------------------------
+# ---------------------------------------------------------------------
+
 # Load data
+data_filepath = "../../data/processed/music_v_mental_health_processed.csv"
 df = pd.read_csv(data_filepath)
 
-# Split data into training, validation, and test sets
+# Split data into Features and Target
 target_column = "music_effects"
 X = df.drop(columns=[target_column])
 y = df[target_column]
@@ -55,10 +218,6 @@ X_train_val, X_test, y_train_val, y_test = train_test_split(
 X_train, X_val, y_train, y_val = train_test_split(
     X_train_val, y_train_val, test_size=0.25, random_state=42, stratify=y_train_val
 )  # 0.25 * 0.8 = 0.2
-
-# Save the test data for later use
-X_test.to_csv(X_test_filepath, index=False)
-y_test.to_csv(y_test_filepath, index=False)
 
 # Train model using training data
 # Define models
@@ -85,16 +244,13 @@ models = [
         ),
         "StackingClassifier",
     ),
-    # Adding BaggingClassifier
     (
         BaggingClassifier(
             estimator=RandomForestClassifier(random_state=42), random_state=42
         ),
         "BaggingClassifier",
     ),
-    # Adding GradientBoostingClassifier
     (GradientBoostingClassifier(random_state=42), "GradientBoostingClassifier"),
-    # Adding AdaBoostClassifier
     (
         AdaBoostClassifier(
             estimator=RandomForestClassifier(random_state=42),
@@ -103,7 +259,6 @@ models = [
         ),
         "AdaBoostClassifier",
     ),
-    # Adding VotingClassifier
     (
         VotingClassifier(
             estimators=[
@@ -119,75 +274,11 @@ models = [
 
 # StratifiedKFold
 skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-
+output_file = "../../reports/model_evaluation_results.txt"
 # Cross-validation and evaluation
-# Open the file to save the results
-with open("../../reports/model_evaluation_results.txt", "w") as f:
-    # Cross-validation and evaluation
-    for model, name in models:
-        f.write(f"Evaluating {name}...\n")
-        print(f"Evaluating {name}...")
-        cv_accuracies = []
-        for train_idx, test_idx in skf.split(X_train, y_train):
-            X_cv_train, X_cv_test = X_train.iloc[train_idx], X_train.iloc[test_idx]
-            y_cv_train, y_cv_test = y_train.iloc[train_idx], y_train.iloc[test_idx]
-
-            # Clone the model to ensure independence of folds
-            clf = clone(model)
-
-            # Train the model
-            clf.fit(X_cv_train, y_cv_train)
-
-            # Evaluate on the CV test set
-            y_cv_pred = clf.predict(X_cv_test)
-            cv_accuracy = accuracy_score(y_cv_test, y_cv_pred)
-            cv_accuracies.append(cv_accuracy)
-
-        # Average CV accuracy
-        avg_cv_accuracy = sum(cv_accuracies) / len(cv_accuracies)
-        f.write(f"{name} average cross-validation accuracy: {avg_cv_accuracy:.4f}\n")
-        print(f"{name} average cross-validation accuracy: {avg_cv_accuracy:.4f}")
-
-        # Final evaluation on the validation set
-        model.fit(X_train, y_train)
-        y_train_pred = model.predict(X_train)
-        y_val_pred = model.predict(X_val)
-        val_accuracy = accuracy_score(y_val, y_val_pred)
-        train_accuracy = accuracy_score(y_train, y_train_pred)
-
-        f.write(f"{name} Training accuracy: {train_accuracy:.4f}\n")
-        f.write(f"{name} validation accuracy: {val_accuracy:.4f}\n")
-        f.write(
-            f"{name} classification report:\n{classification_report(y_val, y_val_pred)}\n"
-        )
-        f.write("-" * 50 + "\n")
-        print(f"{name} validation accuracy: {val_accuracy:.4f}")
-        print(
-            f"{name} classification report:\n{classification_report(y_val, y_val_pred)}"
-        )
-        print("-" * 50)
-
-from sklearn.feature_selection import SelectKBest, chi2
-from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.feature_selection import VarianceThreshold
-from sklearn.feature_selection import RFE
-
-
-# Define pipeline with feature selection and scaling
-def create_pipeline(model):
-    return Pipeline(
-        [
-            (
-                "rfe",
-                RFE(
-                    estimator=RandomForestClassifier(random_state=42),
-                    n_features_to_select=23,
-                ),
-            ),  # Combine multiple feature selection methods
-            ("model", model),
-        ]
-    )
-
+save_and_print_evaluation_results(
+    models, X_train, y_train, X_val, y_val, skf, output_file
+)
 
 # Define the stacking model
 stacking_model = StackingClassifier(
@@ -200,125 +291,47 @@ stacking_model = StackingClassifier(
                 )
             ),
         ),
-        ("svc", create_pipeline(SVC(C=1.0, 
-                                    kernel="linear", 
-                                    random_state=42))),
+        (
+            "svc",
+            create_pipeline(
+                SVC(C=1.0, kernel="linear", probability=True, random_state=42)
+            ),
+        ),
         ("knn", create_pipeline(KNeighborsClassifier())),
     ],
-    final_estimator=LogisticRegression(solver="lbfgs", 
-                                       C=1.0, 
-                                       penalty="l2", 
-                                       max_iter=1000, 
-                                       random_state=42
+    final_estimator=LogisticRegression(
+        solver="lbfgs", C=1.0, penalty="l2", max_iter=1000, random_state=42
     ),
 )
 
-# Train the stacking model on the combined training and validation data
-stacking_model.fit(X_train_val, y_train_val)
-
-# Evaluate the model on the test data
-y_test_pred = stacking_model.predict(X_test)
+# Evaluate the Stacking Model
+# Train the stacking model on the combined training and validation data and
+# Evaluate on the test data
+test_accuracy, class_report, y_test_pred = evaluate_model(
+    stacking_model, X_train_val, y_train_val, X_test, y_test
+)
+# Calculate training accuracy
 y_train_pred = stacking_model.predict(X_train_val)
-# Calculate accuracy
-test_accuracy = accuracy_score(y_test, y_test_pred)
 train_accuracy = accuracy_score(y_train_val, y_train_pred)
-print(f"StackingClassifier Training accuracy: {train_accuracy:.4f}")
 
+
+print(f"StackingClassifier Training accuracy: {train_accuracy:.4f}")
 print(f"StackingClassifier Test accuracy: {test_accuracy:.4f}")
 
+# Retrieve and display the features not selected by SelectKBest
+print_not_selected_features(stacking_model, X_train_val)
+
 # Print the classification report
-print(
-    f"StackingClassifier classification report:\n{classification_report(y_test, y_test_pred)}"
-)
+print(f"StackingClassifier classification report:\n{class_report}")
 
 
-
-
-
-
-# Evaluate model using validation data
-"""Evaluates the model on the validation data."""
-conf_matrix = confusion_matrix(y_test, y_test_pred)
-class_report = classification_report(y_test, y_test_pred, output_dict=True)
-y_pred_proba = model.predict_proba(y_test)
-
-# Plot enhanced visualizations
-class_names = sorted(y_test.unique())
-
-# def plot_normalized_confusion_matrix(cm, class_names, output_dir):
-cm_normalized = conf_matrix.astype("float") / conf_matrix.sum(axis=1)[:, np.newaxis]
-plt.figure(figsize=(8, 6))
-sns.heatmap(
-    cm_normalized,
-    annot=True,
-    fmt=".2f",
-    cmap="Blues",
-    xticklabels=class_names,
-    yticklabels=class_names,
-)
-plt.xlabel("Predicted Labels")
-plt.ylabel("True Labels")
-plt.title("Validation Confusion Matrix (Normalized)")
-plt.savefig(
-    os.path.join(output_dir, "RandomForest_validation_confusion_matrix.png"),
-    bbox_inches="tight",
-)
-plt.close()
-plt.show()
-
-
-# def plot_precision_recall_f1(y_true, y_scores, class_names, output_dir):
-plt.figure(figsize=(14, 7))
-
-for i, class_name in enumerate(class_names):
-    precision, recall, _ = precision_recall_curve(y_test == i, y_pred_proba[:, i])
-    plt.plot(recall, precision, label=f"{class_name} (Precision-Recall)")
-
-plt.xlabel("Recall")
-plt.ylabel("Precision")
-plt.title("Precision-Recall Curve")
-plt.legend(loc="best")
-plt.grid(True)
-plt.savefig(
-    os.path.join(output_dir, "RandomForest_validation_precision_recall_curve.png"),
-    bbox_inches="tight",
-)
-plt.close()
-plt.show()
-
-
-# def plot_roc_curve(y_true, y_scores, class_names, output_dir):
-plt.figure(figsize=(14, 7))
-
-for i, class_name in enumerate(class_names):
-    fpr, tpr, _ = roc_curve(y_test == i, y_pred_proba[:, i])
-    plt.plot(fpr, tpr, label=f"{class_name} (ROC curve)")
-
-plt.xlabel("False Positive Rate")
-plt.ylabel("True Positive Rate")
-plt.title("ROC Curve")
-plt.legend(loc="best")
-plt.grid(True)
-plt.savefig(
-    os.path.join(output_dir, "RandomForest_validation_roc_curve.png"),
-    bbox_inches="tight",
-)
-plt.close()
-plt.show()
-
-
-
-
-
-
-
-
-
-
+# Plot normalized Confusion Matrix
+output_dir = "../../reports/Figures"
+plot_normalized_confusion_matrix(y_test, y_test_pred, output_dir)
 
 
 # Save the trained model
-joblib.dump(model, model_filepath)
+model_filepath = "../../models/music_effects_model.pkl"
+joblib.dump(stacking_model, model_filepath)
 
 print(f"Model training complete. Trained model saved to '{model_filepath}'.")
-print(f"Test data saved to '{X_test_filepath}' and '{y_test_filepath}'.")
