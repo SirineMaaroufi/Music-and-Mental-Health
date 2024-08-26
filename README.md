@@ -20,7 +20,7 @@ Data is organized in the [`data`](data) folder:
 For a detailed description of the data, refer to the [`Data Description`](docs/Data%20Description.md) file.
 
 ## 🛠️ Data Preparation
-Data preparation is crucial for accurate analysis and modeling. The [`make_dataset.py`](src/data/make_dataset.py) script handles data cleaning and transformation. The cleaned data is stored in the [`data/interim`](data/interim) directory. Details are documented in the [`Data Preparation Report`](reports/Data%20Preparation%20Report.md).
+Data preparation is crucial for accurate analysis and modeling. The [`make_dataset.py`](src/data/make_dataset.py) script manages data cleaning and transformation, including handling missing values and outliers. The cleaned data is stored in the [`data/interim`](data/interim) directory. Details are documented in the [`Data Preparation Report`](reports/Data%20Preparation%20Report.md).
 
 ## 📊 Data Visualization
 Effective visualization aids in data interpretation. The [`visualize.py`](src/visualization/visualize.py) script creates exploratory and result-oriented visualizations. Documentation for the script is available in the [`Data Visualization Script Documentation`](docs/Data%20Visualization%20Script%20Documentation.md). Figures are saved in the [`reports/figures`](reports/Figures/) directory.
@@ -30,7 +30,8 @@ The [`EDA and Data Analysis Report`](reports/EDA%20&%20Data%20Analysis%20Report.
 
 ## 🔧 Feature Engineering
 
-Feature engineering enhances model performance. The [`build_feature.py`](src/features/build_features.py) script transforms raw data into features that better represent underlying patterns. Detailed steps are documented in the [`Feature Engineering Documentation`](docs/Feature%20Engineering%20Documentation.md). Preprocessed data is stored in the [`data/processed`](data/processed/) directory.
+Feature engineering boosts model performance by transforming raw data into meaningful features. Key steps include encoding, scaling, creating new features, and addressing class imbalance, detailed in the [`Feature Engineering Documentation`](docs/Feature%20Engineering%20Documentation.md). The preprocessing script, [`build_feature.py`](src/features/build_features.py) handles these transformations.
+Preprocessed data is stored in the [`data/processed`](data/processed/) directory.
 
 ## 🤖 Model Training and Prediction
 
@@ -66,18 +67,18 @@ ___
   - **Listening Habits and Mental Health:** 🎧 Daily music listening (1 to 3.5 hours) generally has a positive impact on mental health, reducing anxiety and depression.
   - **Musical Background and Engagement:** 🎤 Many respondents are musicians or actively engage with music, but there’s no significant difference in mental health impact between musicians and non-musicians.
   - **Correlation Analysis:**
-    - **Music Effects:** 🎵 Music preferences correlate positively with favorite genres and negatively with work activities.
+    - **Music Effects:** 🎵 Music effects correlate positively with favorite genres and negatively with work activities.
     - **Mental Health Conditions:** 🧠 Strong correlations among mental health conditions suggest a tendency for co-occurrence.
     - **Music Characteristics:** 🎶 Tempo and listening duration affect mental health, though not exclusively.
 
-  **Overall Impact:** 🌟 Music positively influences mental well-being, with personalized music therapy showing promise for further benefits.
+  **Overall Impact:** 🌟 Music positively influences mental well-being.
 
 ### 🤖📊 **Modeling Results**
 ___
 * **Summary**: The `StackingClassifier` achieved a high test accuracy, indicating strong model performance. **Precision, recall, and F1-scores** were well-balanced.
 * **Key Takeaways:**
   - **StackingClassifier Performance:** 🏆 The `StackingClassifier`, combining `RandomForest, SVC, KNeighborsClassifier,` and `Logistic Regression`, achieved a **0.9049 Test Accuracy**.
-  - **Precision and Recall:** 🎯 The model demonstrated excellent precision and recall, particularly for the worsening class (-1) with perfect scores.
+  - **Precision and Recall:** 🎯 The model demonstrated excellent precision and recall.
   - **Balanced F1-Scores:** 📈 F1-scores were balanced across all classes, indicating robust model performance.
 
 ## 🔮 Future Work
