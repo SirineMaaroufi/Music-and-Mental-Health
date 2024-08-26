@@ -2,7 +2,9 @@
 
 ## Project Overview
 
-| ![Music Effects on Mental Health](reports/Figures/overview_pic.png) | 
+| <p align="center">
+<img src="nobel_prize.jpeg" alt="drawing" width="400"/>
+</p> | 
 | --- |
 | *This project investigates the relationship between music listening habits and mental health, motivated by a personal passion for music and its positive impact on well-being. As an avid listener of various music genres, I have experienced firsthand how different types of music can influence mood and emotional states. This project aims to explore these effects more systematically, focusing particularly on individuals with mental health conditions.* |
 
