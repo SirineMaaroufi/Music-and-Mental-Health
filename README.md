@@ -18,35 +18,35 @@
 ## Key Components
 
 ## 🗃️ Data Organization
-Data is organized in the [`data`](../Music-and-Mental-Health/data/) folder:
+Data is organized in the [`data`](data) folder:
 - **Raw Data**: Original, unprocessed data.
 - **Interim Data**: Transformed data used as an intermediate step.
 - **Processed Data**: Final datasets prepared for analysis and modeling.
 
-For a detailed description of the data, refer to the [`Data Description`](../Music-and-Mental-Health/docs/Data%20Description.md) file.
+For a detailed description of the data, refer to the [`Data Description`](docs/Data%20Description.md) file.
 
 ## 🛠️ Data Preparation
-Data preparation is crucial for accurate analysis and modeling. The [`make_dataset.py`](../Music-and-Mental-Health/src/data/make_dataset.py) script handles data cleaning and transformation. The cleaned data is stored in the [`data/interim`](../Music-and-Mental-Health/data/interim/) directory. Details are documented in the [`Data Preparation Report`](../Music-and-Mental-Health/reports/Data%20Preparation%20Report.md).
+Data preparation is crucial for accurate analysis and modeling. The [`make_dataset.py`](src/data/make_dataset.py) script handles data cleaning and transformation. The cleaned data is stored in the [`data/interim`](data/interim) directory. Details are documented in the [`Data Preparation Report`](reports/Data%20Preparation%20Report.md).
 
 ## 📊 Data Visualization
-Effective visualization aids in data interpretation. The [`visualize.py`](../Music-and-Mental-Health/src/visualization/visualize.py) script creates exploratory and result-oriented visualizations. Documentation for the script is available in the [`Data Visualization Script Documentation`](../Music-and-Mental-Health/docs/Data%20Visualization%20Script%20Documentation.md). Figures are saved in the [`reports/figures`](../Music-and-Mental-Health/reports/Figures/) directory.
+Effective visualization aids in data interpretation. The [`visualize.py`](src/visualization/visualize.py) script creates exploratory and result-oriented visualizations. Documentation for the script is available in the [`Data Visualization Script Documentation`](docs/Data%20Visualization%20Script%20Documentation.md). Figures are saved in the [`reports/figures`](reports/Figures/) directory.
 
 ## 🔍 Exploratory Data Analysis (EDA) and Data Analysis
-The [`EDA and Data Analysis Report`](../Music-and-Mental-Health/reports/EDA%20&%20Data%20Analysis%20Report.md) provides detailed insights into the dataset, highlighting key trends, correlations, and findings that guide preprocessing decisions.
+The [`EDA and Data Analysis Report`](reports/EDA%20&%20Data%20Analysis%20Report.md) provides detailed insights into the dataset, highlighting key trends, correlations, and findings that guide preprocessing decisions.
 
 ## 🔧 Feature Engineering
 
-Feature engineering enhances model performance. The [`build_feature.py`](../Music-and-Mental-Health/src/features/build_features.py) script transforms raw data into features that better represent underlying patterns. Detailed steps are documented in the [`Feature Engineering Documentation`](../Music-and-Mental-Health/docs/Feature%20Engineering%20Documentation.md). Preprocessed data is stored in the [`data/processed`](../Music-and-Mental-Health/data/processed/) directory.
+Feature engineering enhances model performance. The [`build_feature.py`](src/features/build_features.py) script transforms raw data into features that better represent underlying patterns. Detailed steps are documented in the [`Feature Engineering Documentation`](docs/Feature%20Engineering%20Documentation.md). Preprocessed data is stored in the [`data/processed`](data/processed/) directory.
 
 ## 🤖 Model Training and Prediction
 
-- **Model Training**: Various machine learning models were evaluated, with the StackingClassifier, which combines RandomForest, SVC, KNeighborsClassifier, and Logistic Regression, achieving the best results. Training and evaluation are handled by the [`train_model.py`](../Music-and-Mental-Health/src/models/train_model.py) script, and the trained model is saved in the [`models`](../Music-and-Mental-Health/models/) directory. See the [`Modeling Report`](../Music-and-Mental-Health/reports/Modeling%20Report.md) for details.
+- **Model Training**: Various machine learning models were evaluated, with the StackingClassifier, which combines RandomForest, SVC, KNeighborsClassifier, and Logistic Regression, achieving a **0.90 Test Accuracy**. Training and evaluation are handled by the [`train_model.py`](../Music-and-Mental-Health/src/models/train_model.py) script, and the trained model is saved in the [`models`](../Music-and-Mental-Health/models/) directory. See the [`Modeling Report`](../Music-and-Mental-Health/reports/Modeling%20Report.md) for details.
 
-- **Model Prediction**: The [`predict_model.py`](../Music-and-Mental-Health/src/models/predict_model.py) script makes predictions based on the trained model.
+- **Model Prediction**: The [`predict_model.py`](src/models/predict_model.py) script makes predictions based on the trained model.
 
 ## 📚 Documentation
 
-Find comprehensive project documentation, including methodology, data descriptions, and sources, in the [`docs`](../Music-and-Mental-Health/docs/) directory.
+Find comprehensive project documentation, including methodology, data descriptions, and sources, in the [`docs`](docs) directory.
 
 ## 🛠️ Tools and Technologies
 
