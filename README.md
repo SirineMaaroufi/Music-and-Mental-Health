@@ -2,18 +2,13 @@
 
 ## Project Overview
 
-<div style="display: flex; align-items: center;">
+<p align="left" width="100%">
+  <img src="reports/Figures/overview_pic.png" alt="Music Effects on Mental Health" width="200" style="float: right; margin-left: 20px;"/>
+  This project investigates the relationship between music listening habits and mental health, motivated by a personal passion for music and its positive impact on well-being. As an avid listener of various music genres, I have experienced firsthand how different types of music can influence mood and emotional states. This project aims to explore these effects more systematically, focusing particularly on individuals with mental health conditions.
+  <br><br>
+  By analyzing a comprehensive dataset that includes listener habits, demographics, and self-reported mental health experiences, we seek to uncover the impact of different music genres on mental well-being. The ultimate goal is to develop a predictive model that can assess the potential effects of music on mental health, providing insights for both individuals and healthcare professionals.
+</p>
 
-  <div style="flex: 1; padding-right: 20px;">
-    <p>This project investigates the relationship between music listening habits and mental health, motivated by a personal passion for music and its positive impact on well-being. As an avid listener of various music genres, I have experienced firsthand how different types of music can influence mood and emotional states. This project aims to explore these effects more systematically, focusing particularly on individuals with mental health conditions.</p>
-    <p>By analyzing a comprehensive dataset that includes listener habits, demographics, and self-reported mental health experiences, we seek to uncover the impact of different music genres on mental well-being. The ultimate goal is to develop a predictive model that can assess the potential effects of music on mental health, providing insights for both individuals and healthcare professionals.</p>
-  </div>
-
-  <div>
-    <img src="reports/Figures/overview_pic.png" alt="Music Effects on Mental Health" style="width: 200px; height: auto;"/>
-  </div>
-
-</div>
 
 ## Key Components
 
