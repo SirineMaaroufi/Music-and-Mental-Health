@@ -6,7 +6,7 @@
 | --- |
 | *This project investigates the relationship between music listening habits and mental health, motivated by a personal passion for music and its positive impact on well-being. As an avid listener of various music genres, I have experienced firsthand how different types of music can influence mood and emotional states. This project aims to explore these effects more systematically, focusing particularly on individuals with mental health conditions.* |
 
-By analyzing a comprehensive dataset that includes listener habits, demographics, and self-reported mental health experiences, we seek to uncover the impact of different music genres on mental well-being. The ultimate goal is to develop a predictive model that can assess the potential effects of music on mental health, providing insights for both individuals and healthcare professionals.
+By analyzing a comprehensive dataset that includes listener habits, demographics, and self-reported mental health experiences, we seek to uncover the impact of different music genres on mental well-being. The ultimate goal is to develop a predictive model that can assess the potential effects of music on mental health.
 
 
 ## Key Components
