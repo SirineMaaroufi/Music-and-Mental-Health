@@ -1,0 +1,150 @@
+Evaluating RandomForest...
+RandomForest average cross-validation accuracy: 0.8615
+RandomForest validation accuracy: 0.8892
+RandomForest classification report:
+              precision    recall  f1-score   support
+
+          -1       0.98      0.99      0.99       109
+           0       0.84      0.86      0.85       108
+           1       0.85      0.81      0.83       108
+
+    accuracy                           0.89       325
+   macro avg       0.89      0.89      0.89       325
+weighted avg       0.89      0.89      0.89       325
+
+--------------------------------------------------
+Evaluating SVC...
+SVC average cross-validation accuracy: 0.7436
+SVC validation accuracy: 0.7323
+SVC classification report:
+              precision    recall  f1-score   support
+
+          -1       0.72      0.99      0.84       109
+           0       0.70      0.51      0.59       108
+           1       0.77      0.69      0.73       108
+
+    accuracy                           0.73       325
+   macro avg       0.73      0.73      0.72       325
+weighted avg       0.73      0.73      0.72       325
+
+--------------------------------------------------
+Evaluating KNeighbors...
+KNeighbors average cross-validation accuracy: 0.7518
+KNeighbors validation accuracy: 0.7538
+KNeighbors classification report:
+              precision    recall  f1-score   support
+
+          -1       0.83      1.00      0.90       109
+           0       0.65      0.90      0.75       108
+           1       0.89      0.36      0.51       108
+
+    accuracy                           0.75       325
+   macro avg       0.79      0.75      0.72       325
+weighted avg       0.79      0.75      0.72       325
+
+--------------------------------------------------
+Evaluating LogisticRegression...
+LogisticRegression average cross-validation accuracy: 0.7405
+LogisticRegression validation accuracy: 0.7262
+LogisticRegression classification report:
+              precision    recall  f1-score   support
+
+          -1       0.81      0.95      0.87       109
+           0       0.65      0.54      0.59       108
+           1       0.69      0.69      0.69       108
+
+    accuracy                           0.73       325
+   macro avg       0.72      0.73      0.72       325
+weighted avg       0.72      0.73      0.72       325
+
+--------------------------------------------------
+Evaluating GaussianNB...
+GaussianNB average cross-validation accuracy: 0.6646
+GaussianNB validation accuracy: 0.6462
+GaussianNB classification report:
+              precision    recall  f1-score   support
+
+          -1       0.62      0.91      0.74       109
+           0       0.56      0.32      0.41       108
+           1       0.74      0.70      0.72       108
+
+    accuracy                           0.65       325
+   macro avg       0.64      0.65      0.62       325
+weighted avg       0.64      0.65      0.62       325
+
+--------------------------------------------------
+Evaluating StackingClassifier...
+StackingClassifier average cross-validation accuracy: 0.8749
+StackingClassifier validation accuracy: 0.9138
+StackingClassifier classification report:
+              precision    recall  f1-score   support
+
+          -1       0.98      0.99      0.99       109
+           0       0.90      0.87      0.88       108
+           1       0.86      0.88      0.87       108
+
+    accuracy                           0.91       325
+   macro avg       0.91      0.91      0.91       325
+weighted avg       0.91      0.91      0.91       325
+
+--------------------------------------------------
+Evaluating BaggingClassifier...
+BaggingClassifier average cross-validation accuracy: 0.8595
+BaggingClassifier validation accuracy: 0.8769
+BaggingClassifier classification report:
+              precision    recall  f1-score   support
+
+          -1       0.97      0.99      0.98       109
+           0       0.82      0.86      0.84       108
+           1       0.84      0.78      0.81       108
+
+    accuracy                           0.88       325
+   macro avg       0.88      0.88      0.88       325
+weighted avg       0.88      0.88      0.88       325
+
+--------------------------------------------------
+Evaluating GradientBoostingClassifier...
+GradientBoostingClassifier average cross-validation accuracy: 0.8297
+GradientBoostingClassifier validation accuracy: 0.8677
+GradientBoostingClassifier classification report:
+              precision    recall  f1-score   support
+
+          -1       0.97      1.00      0.99       109
+           0       0.81      0.82      0.82       108
+           1       0.82      0.78      0.80       108
+
+    accuracy                           0.87       325
+   macro avg       0.87      0.87      0.87       325
+weighted avg       0.87      0.87      0.87       325
+
+--------------------------------------------------
+Evaluating AdaBoostClassifier...
+AdaBoostClassifier average cross-validation accuracy: 0.8554
+AdaBoostClassifier validation accuracy: 0.8892
+AdaBoostClassifier classification report:
+              precision    recall  f1-score   support
+
+          -1       0.97      0.98      0.98       109
+           0       0.85      0.87      0.86       108
+           1       0.85      0.81      0.83       108
+
+    accuracy                           0.89       325
+   macro avg       0.89      0.89      0.89       325
+weighted avg       0.89      0.89      0.89       325
+
+--------------------------------------------------
+Evaluating VotingClassifier...
+VotingClassifier average cross-validation accuracy: 0.7692
+VotingClassifier validation accuracy: 0.7354
+VotingClassifier classification report:
+              precision    recall  f1-score   support
+
+          -1       0.76      0.98      0.86       109
+           0       0.68      0.52      0.59       108
+           1       0.74      0.70      0.72       108
+
+    accuracy                           0.74       325
+   macro avg       0.73      0.73      0.72       325
+weighted avg       0.73      0.74      0.72       325
+
+--------------------------------------------------

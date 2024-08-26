@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler, LabelEncoder, OneHotEncoder
 from imblearn.over_sampling import SMOTE
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def load_data(file_path):
@@ -67,6 +69,52 @@ def oversample_minority_classes(df, target_column):
     df_resampled = pd.concat([X_resampled, y_resampled], axis=1)
     return df_resampled
 
+def correlation_analysis(df, target_column, threshold=0.5):
+    """
+    Perform correlation analysis on the dataset.
+    
+    Parameters:
+    df (pd.DataFrame): The dataset to analyze.
+    target_column (str): The name of the target column for correlation analysis.
+    threshold (float): Threshold for identifying highly correlated features. Default is 0.5.
+    
+    Returns:
+    dict: A dictionary with keys 'highly_correlated_features' and 'target_correlations'.
+          'highly_correlated_features' is a list of tuples with highly correlated feature pairs.
+          'target_correlations' is a DataFrame with correlations between features and the target variable.
+    """
+    
+    # Calculate the correlation matrix
+    corr_matrix = df.corr()
+    
+    # Correlation with the target variable
+    target_corr = corr_matrix[target_column].sort_values(ascending=False)
+    
+    # Identify highly correlated features
+    highly_correlated_features = []
+    for i in range(len(corr_matrix.columns)):
+        for j in range(i):
+            if abs(corr_matrix.iloc[i, j]) > threshold:
+                col_pair = (corr_matrix.columns[i], corr_matrix.columns[j])
+                highly_correlated_features.append(col_pair)
+    
+    # Plotting the correlation heatmap
+    plt.figure(figsize=(16, 14))
+    sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+    plt.title('Correlation Matrix Heatmap')
+    plt.savefig("../../reports/Figures/correlation_matrix_post_FE", 
+                bbox_inches='tight')
+    plt.show()
+    
+    # Returning results
+    result = {
+        "highly_correlated_features": highly_correlated_features,
+        "target_correlations": target_corr
+    }
+    
+    
+    return result
+
 
 def main():
     data_filepath = "C:/Users/sirin/Desktop/Github projects/Music-and-Mental-Health/data/interim/music_v_mental_health_cleaned.csv"
@@ -94,6 +142,18 @@ def main():
     target_column = 'music_effects'
     df = oversample_minority_classes(df, target_column)
     
+    # Perform correlation analysis
+    correlation_results = correlation_analysis(df, 
+                                               target_column='music_effects', 
+                                               threshold=0.5)
+
+    # Output the results
+    print("Highly Correlated Features:")
+    print(correlation_results['highly_correlated_features'])
+
+    print("\nCorrelations with Target Variable:")
+    print(correlation_results['target_correlations'])
+
     # Save the processed dataframe to a new file
     df.to_csv('processed_data.csv', index=False)
 
